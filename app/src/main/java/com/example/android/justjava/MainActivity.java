@@ -3,6 +3,8 @@ package com.example.android.justjava;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,9 +21,13 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
+        String hasWhippedCream = isBox1Checked();
+        String hasChocolate = isBox2Checked();
+        String name = getName();
         int price = calculatePrice();
-        String message = createOrderSummary(price);
+        String message = createOrderSummary(price, hasWhippedCream, hasChocolate, name);
         displayMessage(message);
+
     }
 
     public void increment(View view){
@@ -66,11 +72,32 @@ public class MainActivity extends AppCompatActivity {
      * @param price
      * @return order summary
      */
-    private String createOrderSummary(int price){
-        String message = "Name: Sun" + "\n";
+    private String createOrderSummary(int price, String hasWhippedCream, String hasChocolate, String name){
+        String message = "Name: " + name + "\n";
+        message += "Add whipped cream?" + hasWhippedCream + "\n";
+        message += "Add chocolate?" + hasChocolate + "\n";
         message += "Quantity: " + quantity + "\n";
         message += "Total: $" + price + "\n";
         message += "Thank you!";
         return  message;
     }
+
+    public String isBox1Checked(){
+        CheckBox checkBox = (CheckBox) findViewById(R.id.check_box1);
+        boolean ischecked = checkBox.isChecked();
+        return String.valueOf(ischecked);
+    }
+
+    public String isBox2Checked(){
+        CheckBox checkBox = (CheckBox) findViewById(R.id.check_box2);
+        boolean ischecked = checkBox.isChecked();
+        return String.valueOf(ischecked);
+    }
+
+    public String getName(){
+        EditText editText = (EditText) findViewById(R.id.your_name);
+        String name = editText.getText().toString();
+        return name;
+    }
+
 }
