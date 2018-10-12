@@ -1,15 +1,18 @@
 package com.example.android.justjava;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    int quantity = 0;
+    int quantity = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,24 +24,40 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        String hasWhippedCream = isBox1Checked();
-        String hasChocolate = isBox2Checked();
         String name = getName();
+        String title = getString(R.string.email_title) + name;
+        String hasWhippedCream = isWhippedCreamChecked();
+        if (hasWhippedCream == "true") {
+            hasWhippedCream = getString(R.string.is_true);
+        } else {
+            hasWhippedCream = getString(R.string.is_false);
+        }
+        String hasChocolate = isChocolateChecked();
+        if (hasChocolate == "true") {
+            hasChocolate = getString(R.string.is_true);
+        } else {
+            hasChocolate = getString(R.string.is_false);
+        }
         int price = calculatePrice();
         String message = createOrderSummary(price, hasWhippedCream, hasChocolate, name);
-        displayMessage(message);
-
+        composeEmail(title, message);
     }
 
     public void increment(View view){
+        if (quantity == 100){
+            Toast.makeText(this, getString(R.string.increment_hint), Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity + 1;
         displayQuantity(quantity);
     }
 
     public void decrement(View view){
+        if (quantity == 1){
+            Toast.makeText(this, getString(R.string.decrement_hint), Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity - 1;
-        if (quantity < 0)
-            quantity = 0;
         displayQuantity(quantity);
     }
 
@@ -51,19 +70,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method displays the given text on the screen.
-     */
-    private void displayMessage(String message) {
-        TextView priceTextView = (TextView) findViewById(R.id.order_summary_text_view);
-        priceTextView.setText(message);
-    }
-
-    /**
      * Calculates the price of the order.
      * @return total price
      */
     private int calculatePrice() {
         int price = quantity * 5;
+        if (isWhippedCreamChecked() == "true") {
+            price += quantity * 1;
+        }
+        if (isChocolateChecked() == "true") {
+            price += quantity * 2;
+        }
         return price;
     }
 
@@ -73,22 +90,22 @@ public class MainActivity extends AppCompatActivity {
      * @return order summary
      */
     private String createOrderSummary(int price, String hasWhippedCream, String hasChocolate, String name){
-        String message = "Name: " + name + "\n";
-        message += "Add whipped cream?" + hasWhippedCream + "\n";
-        message += "Add chocolate?" + hasChocolate + "\n";
-        message += "Quantity: " + quantity + "\n";
-        message += "Total: $" + price + "\n";
-        message += "Thank you!";
+        String message = getString(R.string.order_summary_name) + name + "\n";
+        message += getString(R.string.order_summary_whipped_cream) + hasWhippedCream + "\n";
+        message += getString(R.string.order_summary_chocolate) + hasChocolate + "\n";
+        message += getString(R.string.order_summary_quantity) + quantity + "\n";
+        message += getString(R.string.order_summary_price) + price + "\n";
+        message += getString(R.string.thank_you);
         return  message;
     }
 
-    public String isBox1Checked(){
+    public String isWhippedCreamChecked(){
         CheckBox checkBox = (CheckBox) findViewById(R.id.check_box1);
         boolean ischecked = checkBox.isChecked();
         return String.valueOf(ischecked);
     }
 
-    public String isBox2Checked(){
+    public String isChocolateChecked(){
         CheckBox checkBox = (CheckBox) findViewById(R.id.check_box2);
         boolean ischecked = checkBox.isChecked();
         return String.valueOf(ischecked);
@@ -98,6 +115,22 @@ public class MainActivity extends AppCompatActivity {
         EditText editText = (EditText) findViewById(R.id.your_name);
         String name = editText.getText().toString();
         return name;
+    }
+
+    /**
+     * 调用电子邮件
+     * @param subject 电子邮件主题
+     * @param text 电子邮件正文
+     */
+    public void composeEmail(String subject, String text) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+//        intent.setType("plain/text");
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 }

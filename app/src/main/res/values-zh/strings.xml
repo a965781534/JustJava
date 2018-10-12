@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Just Java</string>
+    <string name="toppings">附加</string>
+    <string name="order">预订</string>
+    <string name="chocolate">巧克力</string>
+    <string name="hint">名字</string>
+    <string name="whippedCream">奶霜</string>
+    <string name="quantity">数量</string>
+    <string name="order_summary_name">订单名：</string>
+    <string name="order_summary_whipped_cream">是否加奶霜？</string>
+    <string name="order_summary_chocolate">是否加巧克力？</string>
+    <string name="thank_you">谢谢！</string>
+    <string name="order_summary_price">金额：</string>
+    <string name="order_summary_quantity">数量：</string>
+    <string name="email_title">JustJava订单——</string>
+    <string name="increment_hint">不能多于100杯咖啡</string>
+    <string name="decrement_hint">不能少于1杯咖啡</string>
+    <string name="is_false">否</string>
+    <string name="is_true">是</string>
+</resources>
